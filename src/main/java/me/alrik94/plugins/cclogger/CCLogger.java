@@ -4,12 +4,9 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.javatuples.Pair;
 
 public class CCLogger extends JavaPlugin implements Listener {
 
@@ -20,7 +17,6 @@ public class CCLogger extends JavaPlugin implements Listener {
     private LoginLogger loginLogger = null;
     private Notifier chatNotifier = null;
     private CommandExec commandExec;
-    public Map<String, Pair<Integer, String>> chatMap = new HashMap();
 
     @Override
     public void onDisable() {
@@ -34,17 +30,6 @@ public class CCLogger extends JavaPlugin implements Listener {
         loginLogger = new LoginLogger(this);
         chatNotifier = new Notifier(this);
         commandExec = new CommandExec(this);
-        File chatMapFile = new File(getDataFolder(), "chatMap");
-        SLAPI slapiLoader = new SLAPI();
-        try {
-            chatMap = ((Map) SLAPI.load(chatMapFile));
-        } catch (Exception e) {
-            chatMap = new HashMap();
-            try {
-                SLAPI.save(new HashMap(), chatMapFile);
-            } catch (Exception ee) {
-            }
-        }
         getCommand("recent").setExecutor(commandExec);
         configCheck();
         folderCheck();
