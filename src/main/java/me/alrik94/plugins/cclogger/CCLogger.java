@@ -2,8 +2,6 @@ package me.alrik94.plugins.cclogger;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -16,11 +14,9 @@ public class CCLogger extends JavaPlugin implements Listener {
     private ChatLogger chatLogger = null;
     private LoginLogger loginLogger = null;
     private Notifier chatNotifier = null;
-    private CommandExec commandExec;
 
     @Override
     public void onDisable() {
-        // TODO: Place any custom disable code here.
     }
 
     @Override
@@ -29,8 +25,6 @@ public class CCLogger extends JavaPlugin implements Listener {
         chatLogger = new ChatLogger(this);
         loginLogger = new LoginLogger(this);
         chatNotifier = new Notifier(this);
-        commandExec = new CommandExec(this);
-        getCommand("recent").setExecutor(commandExec);
         configCheck();
         folderCheck();
     }

@@ -4,24 +4,8 @@ description: Logs chat and commands
 main: me.alrik94.plugins.cclogger.CCLogger
 name: CCLogger
 startup: postworld
-version: '3.0.0'
+version: '3.1.0'
 permissions:
   cclogger.notify:
     description: Players with this permission get notified when a player says anything on the chat or command notify list.
     default: op
-commands:
-  recent:
-    description: Gives the last 10 messages sent in chat by a certain player.
-    usage: /recent [player]
-    permission: cclogger.recent
-    permission-message: You don't have permission to use this command!
-  data:
-    description: Gives detailed logging information on a certain player.
-    usage: /data [player]
-    permission: cclogger.data
-    permission-message: You don't have permission to use this command!
-  count:
-    description: Counts how many times a player has said a certain word.
-    usage: /count [player] [word]
-    permission: cclogger.count
-    permission-message: You don't have permission to use this command!

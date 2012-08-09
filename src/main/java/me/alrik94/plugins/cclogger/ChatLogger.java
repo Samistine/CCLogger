@@ -14,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerChatEvent;
 
 public class ChatLogger implements Listener {
@@ -26,7 +27,7 @@ public class ChatLogger implements Listener {
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerChat(PlayerChatEvent event) throws IOException {
+    public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException {
         //player instance
         Player player = event.getPlayer();
         //player name
