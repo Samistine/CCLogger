@@ -2,6 +2,8 @@ package me.alrik94.plugins.cclogger;
 
 import java.io.File;
 import java.util.Arrays;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -115,5 +117,13 @@ public class CCLogger extends JavaPlugin implements Listener {
         String contentFormat = "%content = The content that is logged.\n";
         String format = (dateFormat + worldFormat + xCoord + yCoord + zCoord + nameFormat + contentFormat);
         return format;
+    }
+    
+    public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+        if(cmd.getName().equalsIgnoreCase("ccreload")){
+            reloadConfig();
+            return true;
+        }
+        return false;
     }
 }
