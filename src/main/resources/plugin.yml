@@ -9,3 +9,6 @@ permissions:
   cclogger.notify:
     description: Players with this permission get notified when a player says anything on the chat or command notify list.
     default: op
+  cclogger.exempt:
+    description: Players with this permission do not get logged for anything.
+    default: op

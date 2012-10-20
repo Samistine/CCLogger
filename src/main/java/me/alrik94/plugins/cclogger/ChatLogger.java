@@ -52,10 +52,10 @@ public class ChatLogger implements Listener {
         //Check player
         checkPlayer(name);
         //process ALL the informations
-        processInformation(name, message, xLocation, yLocation, zLocation, worldName, date, ipAddress);
+        processInformation(player, name, message, xLocation, yLocation, zLocation, worldName, date, ipAddress);
     }
 
-    public void processInformation(String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public void processInformation(Player player, String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress) {
         boolean globalChat = plugin.getConfig().getBoolean("Log.toggle.globalChat");
         boolean playerChat = plugin.getConfig().getBoolean("Log.toggle.playerChat");
         boolean logNotifyChat = plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
@@ -66,23 +66,24 @@ public class ChatLogger implements Listener {
         File playerFile = new File(playersFolder, playerName + ".log");
         File notifyChatFile = new File(plugin.getDataFolder(), "notifyChat.log");
 
-
-        if (globalChat) {
-            Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
-        }
-        if (playerChat) {
-            Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
-        }
-        if (checkNotifyList(content) && logNotifyChat) {
-            Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
-        }
-        if (checkNotifyList(content) && inGameNotifications) {
-            Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
-            if (logNotifyChat) {
-                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyChat.log!");
+        if (!checkExemptionList(player)) {
+            if (globalChat) {
+                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
+            }
+            if (playerChat) {
+                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
+            }
+            if (checkNotifyList(content) && logNotifyChat) {
+                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
+            }
+            if (checkNotifyList(content) && inGameNotifications) {
+                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
+                if (logNotifyChat) {
+                    Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyChat.log!");
+                }
             }
         }
-        
+
     }
 
     public void checkPlayer(String name) throws IOException {
@@ -137,6 +138,13 @@ public class ChatLogger implements Listener {
             if (message.toLowerCase().contains(messageList.get(i))) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    public boolean checkExemptionList(Player player) {
+        if (player.hasPermission("cclogger.exempt")) {
+            return true;
         }
         return false;
     }

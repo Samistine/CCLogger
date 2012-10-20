@@ -27,7 +27,7 @@ public class LoginLogger implements Listener {
         String name = player.getName();
         String date = getDate();
         checkPlayer(name);
-        processInformationJoin(name, date);
+        processInformationJoin(player, name, date);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -36,10 +36,10 @@ public class LoginLogger implements Listener {
         String name = player.getName();
         String date = getDate();
         checkPlayer(name);
-        processInformationQuit(name, date);
+        processInformationQuit(player, name, date);
     }
 
-    public void processInformationJoin(String playerName, String date) {
+    public void processInformationJoin(Player player, String playerName, String date) {
         boolean globalLogin = plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(plugin.getDataFolder(), "players");
@@ -47,16 +47,17 @@ public class LoginLogger implements Listener {
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged in."};
 
-
-        if (globalLogin) {
-            Writer.writeFile(log, chatFile);
-        }
-        if (playerLogin) {
-            Writer.writeFile(log, playerFile);
+        if (!checkExemptionList(player)) {
+            if (globalLogin) {
+                Writer.writeFile(log, chatFile);
+            }
+            if (playerLogin) {
+                Writer.writeFile(log, playerFile);
+            }
         }
     }
 
-    public void processInformationQuit(String playerName, String date) {
+    public void processInformationQuit(Player player, String playerName, String date) {
         boolean globalLogin = plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(plugin.getDataFolder(), "players");
@@ -64,12 +65,13 @@ public class LoginLogger implements Listener {
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged out."};
 
-
-        if (globalLogin) {
-            Writer.writeFile(log, chatFile);
-        }
-        if (playerLogin) {
-            Writer.writeFile(log, playerFile);
+        if (!checkExemptionList(player)) {
+            if (globalLogin) {
+                Writer.writeFile(log, chatFile);
+            }
+            if (playerLogin) {
+                Writer.writeFile(log, playerFile);
+            }
         }
     }
 
@@ -87,5 +89,12 @@ public class LoginLogger implements Listener {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public boolean checkExemptionList(Player player) {
+        if (player.hasPermission("cclogger.exempt")) {
+            return true;
+        }
+        return false;
     }
 }

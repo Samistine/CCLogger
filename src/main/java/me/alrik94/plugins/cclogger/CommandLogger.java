@@ -57,11 +57,11 @@ public class CommandLogger implements Listener {
         //Check player
         checkPlayer(name);
         //process ALL the informations
-        processInformation(name, command, xLocation, yLocation, zLocation, worldName, date, ipAddress);
+        processInformation(player, name, command, xLocation, yLocation, zLocation, worldName, date, ipAddress);
 
     }
 
-    public void processInformation(String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public void processInformation(Player player, String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
         boolean playerCommand = plugin.getConfig().getBoolean("Log.toggle.playerCommands");
         boolean globalCommand = plugin.getConfig().getBoolean("Log.toggle.globalCommands");
         boolean logNotifyCommands = plugin.getConfig().getBoolean("Log.toggle.logNotifyCommands");
@@ -73,24 +73,25 @@ public class CommandLogger implements Listener {
 
 
 
-
-        if (globalCommand) {
-            if (!commandCheck(command)) {
-                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), commandFile);
+        if (!checkExemptionList(player)) {
+            if (globalCommand) {
+                if (!commandCheck(command)) {
+                    Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), commandFile);
+                }
             }
-        }
-        if (playerCommand) {
-            if (!commandCheck(command)) {
-                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), playerFile);
+            if (playerCommand) {
+                if (!commandCheck(command)) {
+                    Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), playerFile);
+                }
             }
-        }
-        if (checkNotifyList(command) && logNotifyCommands) {
-            Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), notifyCommandFile);
-        }
-        if (checkNotifyList(command) && inGameNotifications) {
-            Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
-            if (logNotifyCommands) {
-                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyCommands.log!");
+            if (checkNotifyList(command) && logNotifyCommands) {
+                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), notifyCommandFile);
+            }
+            if (checkNotifyList(command) && inGameNotifications) {
+                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
+                if (logNotifyCommands) {
+                    Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyCommands.log!");
+                }
             }
         }
     }
@@ -165,5 +166,12 @@ public class CommandLogger implements Listener {
         DateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a");
         Date date = new Date();
         return dateFormat.format(date);
+    }
+
+    public boolean checkExemptionList(Player player) {
+        if (player.hasPermission("cclogger.exempt")) {
+            return true;
+        }
+        return false;
     }
 }
