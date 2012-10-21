@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package me.alrik94.plugins.cclogger;
 
 import java.io.BufferedWriter;
@@ -9,13 +5,8 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
-/**
- *
- * @author Alrik
- */
 public class Writer {
 
-    //Create file
     public static void createFile(File file, String[] i) {
         BufferedWriter buffwriter = null;
         FileWriter filewriter = null;
@@ -48,7 +39,6 @@ public class Writer {
         }
     }
 
-    //Write to the file
     public static void writeFile(String[] i, File type) {
         File log = type;
         BufferedWriter buffwriter = null;
