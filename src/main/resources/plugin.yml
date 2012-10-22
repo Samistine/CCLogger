@@ -4,7 +4,7 @@ description: Logs chat and commands
 main: me.alrik94.plugins.cclogger.CCLogger
 name: CCLogger
 startup: postworld
-version: '3.2.0'
+version: '3.1.1'
 permissions:
   cclogger.notify:
     description: Players with this permission get notified when a player says anything on the chat or command notify list.
