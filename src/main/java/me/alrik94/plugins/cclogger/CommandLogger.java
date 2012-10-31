@@ -54,7 +54,6 @@ public class CommandLogger implements Listener {
         checkPlayer(name);
         //process ALL the informations
         processInformation(player, name, command, xLocation, yLocation, zLocation, worldName, date, ipAddress);
-
     }
 
     public void processInformation(Player player, String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
@@ -85,9 +84,6 @@ public class CommandLogger implements Listener {
             }
             if (checkNotifyList(command) && inGameNotifications) {
                 Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
-                if (logNotifyCommands) {
-                    Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyCommands.log!");
-                }
             }
         }
     }

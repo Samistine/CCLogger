@@ -78,9 +78,6 @@ public class ChatLogger implements Listener {
             }
             if (checkNotifyList(content) && inGameNotifications) {
                 Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
-                if (logNotifyChat) {
-                    Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.WHITE + "data has been logged to notifyChat.log!");
-                }
             }
         }
 
