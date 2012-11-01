@@ -14,11 +14,11 @@ import org.bukkit.event.player.PlayerQuitEvent;
 
 public class LoginLogger implements Listener {
 
-    private CCLogger plugin;
+    private CCLogger plugin = null;
 
     public LoginLogger(final CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         plugin = plugins;
+        plugins.getServer().getPluginManager().registerEvents(plugin, plugins);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

@@ -5,7 +5,7 @@ import org.bukkit.entity.Player;
 
 public class Notifier {
 
-    private CCLogger plugin;
+    private CCLogger plugin = null;
 
     public Notifier(final CCLogger plugins) {
 

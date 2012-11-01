@@ -18,12 +18,11 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 public class CommandLogger implements Listener {
 
-    private CCLogger plugin;
-    private Notifier notifier;
+    private CCLogger plugin = null;
 
     public CommandLogger(final CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         plugin = plugins;
+        plugins.getServer().getPluginManager().registerEvents(plugin, plugins);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)

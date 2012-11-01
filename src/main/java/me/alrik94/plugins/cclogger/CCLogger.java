@@ -10,7 +10,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 public class CCLogger extends JavaPlugin implements Listener {
 
-    private FileConfiguration config;
+    private FileConfiguration config = null;
     private File configFile = null;
     private CommandLogger commandLogger = null;
     private ChatLogger chatLogger = null;

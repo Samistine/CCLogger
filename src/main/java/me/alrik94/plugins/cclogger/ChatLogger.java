@@ -18,11 +18,11 @@ import org.bukkit.event.player.AsyncPlayerChatEvent;
 
 public class ChatLogger implements Listener {
 
-    private CCLogger plugin;
+    private CCLogger plugin = null;
 
     public ChatLogger(final CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         plugin = plugins;
+        plugins.getServer().getPluginManager().registerEvents(plugin, plugins);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
