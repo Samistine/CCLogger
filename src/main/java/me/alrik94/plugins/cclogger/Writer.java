@@ -8,30 +8,30 @@ import java.io.IOException;
 public class Writer {
 
     public static void createFile(File file, String[] i) {
-        BufferedWriter buffwriter = null;
-        FileWriter filewriter = null;
+        BufferedWriter buffWriter = null;
+        FileWriter fileWriter = null;
         try {
             file.createNewFile();
-            filewriter = new FileWriter(file, true);
-            buffwriter = new BufferedWriter(filewriter);
+            fileWriter = new FileWriter(file, true);
+            buffWriter = new BufferedWriter(fileWriter);
 
 
             for (String string : i) {
 
-                buffwriter.write(string);
-                buffwriter.newLine();
+                buffWriter.write(string);
+                buffWriter.newLine();
             }
 
-            buffwriter.flush();
+            buffWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (buffwriter != null) {
-                    buffwriter.close();
+                if (buffWriter != null) {
+                    buffWriter.close();
                 }
-                if (filewriter != null) {
-                    filewriter.close();
+                if (fileWriter != null) {
+                    fileWriter.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();

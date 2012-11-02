@@ -118,9 +118,10 @@ public class CCLogger extends JavaPlugin implements Listener {
         String format = (dateFormat + worldFormat + xCoord + yCoord + zCoord + nameFormat + contentFormat);
         return format;
     }
-    
+
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-        if(cmd.getName().equalsIgnoreCase("ccreload")){
+        if (cmd.getName().equalsIgnoreCase("ccreload")) {
             reloadConfig();
             return true;
         }
