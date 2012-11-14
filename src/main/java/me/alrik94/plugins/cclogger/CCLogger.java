@@ -40,7 +40,6 @@ public class CCLogger extends JavaPlugin implements Listener {
 
     public void configCheck() {
         String[] blacklist = {"/help", "/who", "/home"};
-//        String[] whitelist = { "/kill", "/smite", "/sudo" };
         String[] commandNotifyList = {"/pl", "/item", "/give"};
         String[] chatNotifyList = {"kill", "ddos", "hack", "flymod"};
         File dataFolder = getDataFolder();
@@ -75,9 +74,6 @@ public class CCLogger extends JavaPlugin implements Listener {
             if (!config.contains("Log.toggle.logNotifyCommands")) {
                 config.set("Log.toggle.logNotifyCommands", true);
             }
-//            if (!config.contains("Log.toggle.commandsWhitelist")) {
-//                config.set("Log.toggle.commandsWhitelist", false);
-//            }
             if (!config.contains("Log.toggle.playerLogin")) {
                 config.set("Log.toggle.playerLogin", true);
             }
@@ -87,9 +83,6 @@ public class CCLogger extends JavaPlugin implements Listener {
             if (!config.contains("Log.commands.blacklist")) {
                 config.addDefault("Log.commands.blacklist", Arrays.asList(blacklist));
             }
-//                if(!config.contains("Log.commands.whitelist")) {
-//                    config.addDefault("Log.commands.whitelist", Arrays.asList(whitelist));
-//                }
 
             if (!config.contains("Log.logFormat")) {
                 config.addDefault("Log.logFormat", "[%ip][%date (%world: %x,%y,%z)] %name: %content");
@@ -104,6 +97,7 @@ public class CCLogger extends JavaPlugin implements Listener {
             saveConfig();
 
         } catch (Exception e) {
+            System.out.println("[CCLogger] Something bad happened...");
         }
     }
 
