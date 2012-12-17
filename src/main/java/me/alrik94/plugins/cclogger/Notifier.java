@@ -5,15 +5,13 @@ import org.bukkit.entity.Player;
 
 public class Notifier {
 
-    private CCLogger plugin = null;
+    private CCLogger plugin;
 
-    public Notifier(final CCLogger plugins) {
-
-        plugin = plugins;
+    public Notifier(CCLogger plugins) {
+        this.plugin = plugins;
     }
 
     public static void notifyPlayer(String string) {
-
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (player.hasPermission("cclogger.notify")) {
                 player.sendMessage(string);

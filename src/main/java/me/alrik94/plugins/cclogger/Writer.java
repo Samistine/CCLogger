@@ -8,30 +8,28 @@ import java.io.IOException;
 public class Writer {
 
     public static void createFile(File file, String[] i) {
-        BufferedWriter buffWriter = null;
-        FileWriter fileWriter = null;
+        BufferedWriter buffwriter = null;
+        FileWriter filewriter = null;
         try {
             file.createNewFile();
-            fileWriter = new FileWriter(file, true);
-            buffWriter = new BufferedWriter(fileWriter);
-
+            filewriter = new FileWriter(file, true);
+            buffwriter = new BufferedWriter(filewriter);
 
             for (String string : i) {
-
-                buffWriter.write(string);
-                buffWriter.newLine();
+                buffwriter.write(string);
+                buffwriter.newLine();
             }
 
-            buffWriter.flush();
+            buffwriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                if (buffWriter != null) {
-                    buffWriter.close();
+                if (buffwriter != null) {
+                    buffwriter.close();
                 }
-                if (fileWriter != null) {
-                    fileWriter.close();
+                if (filewriter != null) {
+                    filewriter.close();
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -47,9 +45,7 @@ public class Writer {
             filewriter = new FileWriter(log, true);
             buffwriter = new BufferedWriter(filewriter);
 
-
             for (String s : i) {
-
                 buffwriter.write(s);
                 buffwriter.newLine();
             }
@@ -58,6 +54,5 @@ public class Writer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -16,56 +16,58 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 
-public class ChatLogger implements Listener {
+public class ChatLogger
+        implements Listener {
 
-    private CCLogger plugin = null;
+    private CCLogger plugin;
 
-    public ChatLogger(final CCLogger plugins) {
-        plugin = plugins;
-        plugins.getServer().getPluginManager().registerEvents(plugin, plugins);
+    public ChatLogger(CCLogger plugins) {
+        plugins.getServer().getPluginManager().registerEvents(this, plugins);
+        this.plugin = plugins;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException {
-        //player instance
         Player player = event.getPlayer();
-        //player name
+
         String name = player.getName();
-        //player command
+
         String message = event.getMessage();
-        //player Location instance
+
         Location location = player.getLocation();
-        //player X coordinate
+
         int xLocation = (int) location.getX();
-        //player Y coordinate
+
         int yLocation = (int) location.getY();
-        //player Z coordinate
+
         int zLocation = (int) location.getZ();
-        //player World instance
+
         World world = location.getWorld();
-        //player IP address
+
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-        //player world name
+
         String worldName = world.getName();
-        //process date and time
+
         String date = getDate();
-        //Check player
+
         checkPlayer(name);
-        //process ALL the informations
+
         processInformation(player, name, message, xLocation, yLocation, zLocation, worldName, date, ipAddress);
     }
 
     public void processInformation(Player player, String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress) {
-        boolean globalChat = plugin.getConfig().getBoolean("Log.toggle.globalChat");
-        boolean playerChat = plugin.getConfig().getBoolean("Log.toggle.playerChat");
-        boolean logNotifyChat = plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
-        boolean inGameNotifications = plugin.getConfig().getBoolean("Log.toggle.inGameNotifications");
-        // boolean logNotifyCommands = plugin.getConfig().getBoolean("Log.toggle.logNotifyCommands");
-        File playersFolder = new File(plugin.getDataFolder(), "players");
-        File chatFile = new File(plugin.getDataFolder(), "chat.log");
-        File playerFile = new File(playersFolder, playerName + ".log");
-        File notifyChatFile = new File(plugin.getDataFolder(), "notifyChat.log");
+        boolean globalChat = this.plugin.getConfig().getBoolean("Log.toggle.globalChat");
+        boolean playerChat = this.plugin.getConfig().getBoolean("Log.toggle.playerChat");
+        boolean logNotifyChat = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
+        boolean inGameNotifications = this.plugin.getConfig().getBoolean("Log.toggle.inGameNotifications");
 
+        File playersFolder = new File(this.plugin.getDataFolder(), "players");
+        File chatFile = new File(this.plugin.getDataFolder(), "chat.log");
+        File playerFile = new File(playersFolder, playerName + ".log");
+        File notifyChatFile = new File(this.plugin.getDataFolder(), "notifyChat.log");
+
+        plugin.writeContent(playerName, content, x, y, z, worldName, date, ipAddress);
+        
         if (!checkExemptionList(player)) {
             if (globalChat) {
                 Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
@@ -73,18 +75,18 @@ public class ChatLogger implements Listener {
             if (playerChat) {
                 Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
             }
-            if (checkNotifyList(content) && logNotifyChat) {
+            if ((checkNotifyList(content)) && (logNotifyChat)) {
                 Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
             }
-            if (checkNotifyList(content) && inGameNotifications) {
+            if ((checkNotifyList(content)) && (inGameNotifications)) {
                 Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
             }
         }
-
     }
 
-    public void checkPlayer(String name) throws IOException {
-        File playersFolder = new File(plugin.getDataFolder(), "players");
+    public void checkPlayer(String name)
+            throws IOException {
+        File playersFolder = new File(this.plugin.getDataFolder(), "players");
         File file = new File(playersFolder, name + ".log");
         if (!file.exists()) {
             file.createNewFile();
@@ -92,7 +94,7 @@ public class ChatLogger implements Listener {
     }
 
     public String[] formatLog(String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
-        String format = plugin.getConfig().getString("Log.logFormat");
+        String format = this.plugin.getConfig().getString("Log.logFormat");
         String log = format;
         if (log.contains("%ip")) {
             log = log.replaceAll("%ip", ipAddress);
@@ -130,9 +132,9 @@ public class ChatLogger implements Listener {
     }
 
     public boolean checkNotifyList(String message) {
-        List<String> messageList = plugin.getConfig().getStringList("Log.notifications.chat");
+        List messageList = this.plugin.getConfig().getStringList("Log.notifications.chat");
         for (int i = 0; i < messageList.size(); i++) {
-            if (message.toLowerCase().contains(messageList.get(i))) {
+            if (message.toLowerCase().contains((CharSequence) messageList.get(i))) {
                 return true;
             }
         }

@@ -12,13 +12,14 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-public class LoginLogger implements Listener {
+public class LoginLogger
+        implements Listener {
 
-    private CCLogger plugin = null;
+    private CCLogger plugin;
 
-    public LoginLogger(final CCLogger plugins) {
-        plugin = plugins;
-        plugins.getServer().getPluginManager().registerEvents(plugin, plugins);
+    public LoginLogger(CCLogger plugins) {
+        plugins.getServer().getPluginManager().registerEvents(this, plugins);
+        this.plugin = plugins;
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
@@ -40,10 +41,10 @@ public class LoginLogger implements Listener {
     }
 
     public void processInformationJoin(Player player, String playerName, String date) {
-        boolean globalLogin = plugin.getConfig().getBoolean("Log.toggle.globalLogin");
-        boolean playerLogin = plugin.getConfig().getBoolean("Log.toggle.playerLogin");
-        File playersFolder = new File(plugin.getDataFolder(), "players");
-        File chatFile = new File(plugin.getDataFolder(), "chat.log");
+        boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
+        boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
+        File playersFolder = new File(this.plugin.getDataFolder(), "players");
+        File chatFile = new File(this.plugin.getDataFolder(), "chat.log");
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged in."};
 
@@ -58,10 +59,10 @@ public class LoginLogger implements Listener {
     }
 
     public void processInformationQuit(Player player, String playerName, String date) {
-        boolean globalLogin = plugin.getConfig().getBoolean("Log.toggle.globalLogin");
-        boolean playerLogin = plugin.getConfig().getBoolean("Log.toggle.playerLogin");
-        File playersFolder = new File(plugin.getDataFolder(), "players");
-        File chatFile = new File(plugin.getDataFolder(), "chat.log");
+        boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
+        boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
+        File playersFolder = new File(this.plugin.getDataFolder(), "players");
+        File chatFile = new File(this.plugin.getDataFolder(), "chat.log");
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged out."};
 
@@ -76,13 +77,11 @@ public class LoginLogger implements Listener {
     }
 
     public void checkPlayer(String name) throws IOException {
-        File playersFolder = new File(plugin.getDataFolder(), "players");
+        File playersFolder = new File(this.plugin.getDataFolder(), "players");
         File file = new File(playersFolder, name + ".log");
         if (!file.exists()) {
             file.createNewFile();
         }
-
-
     }
 
     public String getDate() {
