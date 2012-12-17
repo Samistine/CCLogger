@@ -1,8 +1,10 @@
 package me.alrik94.plugins.cclogger;
 
 import java.io.File;
+import java.sql.SQLException;
 import java.util.Arrays;
 import lib.PatPeter.SQLibrary.SQLite;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -18,6 +20,7 @@ public class CCLogger extends JavaPlugin
     private ChatLogger chatLogger = null;
     private LoginLogger loginLogger = null;
     private Notifier chatNotifier = null;
+    public Database database;
     public SQLite sqlite;
 
     @Override
@@ -27,46 +30,17 @@ public class CCLogger extends JavaPlugin
 
     @Override
     public void onEnable() {
+        this.database = new Database(this);
         this.commandLogger = new CommandLogger(this);
         this.chatLogger = new ChatLogger(this);
         this.loginLogger = new LoginLogger(this);
         this.chatNotifier = new Notifier(this);
         configCheck();
         folderCheck();
-        sqlConnection();
-        sqlTableCheck();
+        database.sqlConnection();
+        database.sqlTableCheck();
     }
-    
-    public void sqlConnection() {
-        sqlite = new SQLite(this.getLogger(),
-                "CCLogger",
-                "chatdata",
-                this.getDataFolder().getAbsolutePath());
-//Make sure sqlite is the same as the variable you specified at the top of the plugin!
-        try {
-            sqlite.open();
-        } catch (Exception e) {
-            this.getLogger().info(e.getMessage());
-            getPluginLoader().disablePlugin(this);
-        }
-    }
-    
-    public void sqlTableCheck() {
-        if (sqlite.checkTable("cclogger")) {
-            return;
-        } else {
-            sqlite.query("CREATE TABLE 'cclogger'(id INT PRIMARY KEY, playername VARCHAR(50), content VARCHAR(50), xlocation VARCHAR(50), ylocation VARCHAR(50), zlocation VARCHAR(50), worldname VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
 
-            sqlite.query("INSERT INTO 'cclogger'(playername, content) VALUES('Pew446', '08/09/2012');"); //This is optional. You can do this later if you want.
-
-            this.getLogger().info("Table 'cclogger' has been created");
-        }
-    }
-    
-    public void writeContent(String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress){
-        sqlite.query("INSERT INTO 'cclogger'(playername, content, xlocation, ylocation, zlocation, worldname, date, ipaddress) VALUES('"+playerName+"', '"+content+"', '"+x+"', '"+y+"', '"+z+"', '"+worldName+"', '"+date+"', '"+ipAddress+"')");
-    }
-    
     public void folderCheck() {
         File playersFolder = new File(getDataFolder(), "players");
         if (!playersFolder.exists()) {
@@ -149,9 +123,43 @@ public class CCLogger extends JavaPlugin
         return format;
     }
 
+    @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         if (cmd.getName().equalsIgnoreCase("ccreload")) {
             reloadConfig();
+            return true;
+        }
+        if (cmd.getName().equalsIgnoreCase("ccl")) {
+            if(args.length > 0 && args[0].equalsIgnoreCase("count")){
+                if(args.length == 1){
+                    sender.sendMessage(ChatColor.RED + "/ccl count <word> <player>");
+                }
+                if (args.length == 2){
+                    String word = args[1];
+                    int count = 0;
+                    try {
+                        count = database.countWord(word);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    sender.sendMessage("[CCLogger] '"+word+"': "+count+"");
+                }
+                if (args.length == 3){
+                    String word = args[1];
+                    String playerName = args[2];
+                    int count = 0;
+                    try {
+                        count = database.countWordFromPlayer(playerName, word);
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
+                    sender.sendMessage("[CCLogger] "+ChatColor.UNDERLINE+playerName+ChatColor.RESET+" has said '"+ChatColor.BOLD+word+ChatColor.RESET+"' "+ChatColor.BLUE+count+" times.");
+                    
+                }
+                
+            }
+            
+            
             return true;
         }
         return false;

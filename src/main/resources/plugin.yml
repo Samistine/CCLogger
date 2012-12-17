@@ -18,3 +18,8 @@ commands:
     usage: /<command>
     permission: cclogger.reload
     permission-message: You don't have permission to use this command!
+  ccl:
+    description: This is a base command for many CCLogger commands.
+    usage: /<command> <subcommand>
+    permission: cclogger.statistics
+    permission-message: You don't have permission to use this command!

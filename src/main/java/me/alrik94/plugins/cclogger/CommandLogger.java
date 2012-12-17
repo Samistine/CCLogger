@@ -66,6 +66,8 @@ public class CommandLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         File notifyCommandFile = new File(this.plugin.getDataFolder(), "notifyCommands.log");
 
+        plugin.database.writeCommandContent(playerName, command, x, y, z, worldName, date, ipAddress);
+        
         if (!checkExemptionList(player)) {
             if ((globalCommand)
                     && (!commandCheck(command))) {

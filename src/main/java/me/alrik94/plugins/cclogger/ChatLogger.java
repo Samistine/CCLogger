@@ -66,7 +66,7 @@ public class ChatLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         File notifyChatFile = new File(this.plugin.getDataFolder(), "notifyChat.log");
 
-        plugin.writeContent(playerName, content, x, y, z, worldName, date, ipAddress);
+        plugin.database.writeChatContent(playerName, content, x, y, z, worldName, date, ipAddress);
         
         if (!checkExemptionList(player)) {
             if (globalChat) {

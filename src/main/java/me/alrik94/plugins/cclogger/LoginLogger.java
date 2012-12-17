@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -26,21 +28,37 @@ public class LoginLogger
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         Player player = event.getPlayer();
         String name = player.getName();
+        Location location = player.getLocation();
+        int x = (int) location.getX();
+        int y = (int) location.getY();
+        int z = (int) location.getZ();
+        World world = location.getWorld();
+        String ipAddress = player.getAddress().getAddress().getHostAddress();
+        String worldName = world.getName();
         String date = getDate();
+        String login = "1";
         checkPlayer(name);
-        processInformationJoin(player, name, date);
+        processInformationJoin(player, name, login, x, y, z, worldName, date, ipAddress);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) throws IOException {
         Player player = event.getPlayer();
         String name = player.getName();
+        Location location = player.getLocation();
+        int x = (int) location.getX();
+        int y = (int) location.getY();
+        int z = (int) location.getZ();
+        World world = location.getWorld();
+        String ipAddress = player.getAddress().getAddress().getHostAddress();
+        String worldName = world.getName();
         String date = getDate();
+        String login = "0";
         checkPlayer(name);
-        processInformationQuit(player, name, date);
+        processInformationQuit(player, name, login, x, y, z, worldName, date, ipAddress);
     }
 
-    public void processInformationJoin(Player player, String playerName, String date) {
+    public void processInformationJoin(Player player, String playerName, String login, int x, int y, int z, String worldName, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -48,6 +66,8 @@ public class LoginLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged in."};
 
+        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        
         if (!checkExemptionList(player)) {
             if (globalLogin) {
                 Writer.writeFile(log, chatFile);
@@ -58,7 +78,7 @@ public class LoginLogger
         }
     }
 
-    public void processInformationQuit(Player player, String playerName, String date) {
+    public void processInformationQuit(Player player, String playerName, String login, int x, int y, int z, String worldName, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -66,6 +86,8 @@ public class LoginLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged out."};
 
+        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        
         if (!checkExemptionList(player)) {
             if (globalLogin) {
                 Writer.writeFile(log, chatFile);
