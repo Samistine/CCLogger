@@ -7,7 +7,13 @@ import java.io.IOException;
 
 public class Writer {
 
-    public static void createFile(File file, String[] i) {
+    private CCLogger plugin;
+    
+    public Writer(CCLogger plugins) {
+        this.plugin = plugins;
+    }
+    
+    public void createFile(File file, String[] i) {
         BufferedWriter buffwriter = null;
         FileWriter filewriter = null;
         try {
@@ -37,7 +43,7 @@ public class Writer {
         }
     }
 
-    public static void writeFile(String[] i, File type) {
+    public void writeFile(String[] i, File type) {
         File log = type;
         BufferedWriter buffwriter = null;
         FileWriter filewriter = null;

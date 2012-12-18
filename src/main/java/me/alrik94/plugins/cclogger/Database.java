@@ -4,7 +4,6 @@ package me.alrik94.plugins.cclogger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lib.PatPeter.SQLibrary.SQLite;
-import java.util.regex.*;
 import org.apache.commons.lang.StringUtils;
 
 public class Database {
@@ -19,7 +18,7 @@ public class Database {
     public void sqlConnection() {
         sqlite = new SQLite(plugin.getLogger(),
                 "CCLogger",
-                "chatdata",
+                "data",
                 plugin.getDataFolder().getAbsolutePath());
 //Make sure sqlite is the same as the variable you specified at the top of the plugin!
         try {
@@ -76,9 +75,10 @@ public class Database {
         int count = 0;
         ResultSet result = sqlite.query("SELECT content FROM chat WHERE playername='"+playerName+"';");
         while(result.next()){
-            String content = result.getString("content");
-            if(content.contains(word)){
-                int times = StringUtils.countMatches(content, word);
+            String content = result.getString("content").toLowerCase();
+            String searched = word.toLowerCase();
+            if(content.contains(searched)){
+                int times = StringUtils.countMatches(content, searched);
                 count+=times;
             }
         }
@@ -88,10 +88,25 @@ public class Database {
         int count = 0;
         ResultSet result = sqlite.query("SELECT content FROM chat;");
         while(result.next()){
-            String content = result.getString("content");
-            if(content.contains(word)){
-                int times = StringUtils.countMatches(content, word);
+            String content = result.getString("content").toLowerCase();
+            String searched = word.toLowerCase();
+            if(content.contains(searched)){
+                int times = StringUtils.countMatches(content, searched);
                 count+=times;
+            }
+        }
+        return count;
+    }
+    public int totalPlayerChatCount(String playerName) throws SQLException{
+        int count = 0;
+        ResultSet result = sqlite.query("SELECT content FROM chat WHERE playername='"+playerName+"';");
+        while(result.next()){
+            String[] content = result.getString("content").toLowerCase().split(" ");
+            for(int i = 0; i<content.length; i++){
+                if(content[i].equals(" ")) {
+                }else{
+                    count++;
+                }
             }
         }
         return count;

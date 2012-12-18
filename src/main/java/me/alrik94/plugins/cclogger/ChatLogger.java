@@ -20,6 +20,7 @@ public class ChatLogger
         implements Listener {
 
     private CCLogger plugin;
+    
 
     public ChatLogger(CCLogger plugins) {
         plugins.getServer().getPluginManager().registerEvents(this, plugins);
@@ -66,22 +67,24 @@ public class ChatLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         File notifyChatFile = new File(this.plugin.getDataFolder(), "notifyChat.log");
 
-        plugin.database.writeChatContent(playerName, content, x, y, z, worldName, date, ipAddress);
+        
         
         if (!checkExemptionList(player)) {
             if (globalChat) {
-                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
             }
             if (playerChat) {
-                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
+                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
             }
             if ((checkNotifyList(content)) && (logNotifyChat)) {
-                Writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
             }
             if ((checkNotifyList(content)) && (inGameNotifications)) {
-                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
+                plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
             }
         }
+        
+        plugin.database.writeChatContent(playerName, content, x, y, z, worldName, date, ipAddress);
     }
 
     public void checkPlayer(String name)

@@ -66,16 +66,18 @@ public class LoginLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged in."};
 
-        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        
         
         if (!checkExemptionList(player)) {
             if (globalLogin) {
-                Writer.writeFile(log, chatFile);
+                plugin.writer.writeFile(log, chatFile);
             }
             if (playerLogin) {
-                Writer.writeFile(log, playerFile);
+                plugin.writer.writeFile(log, playerFile);
             }
         }
+        
+        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
     }
 
     public void processInformationQuit(Player player, String playerName, String login, int x, int y, int z, String worldName, String date, String ipAddress) {
@@ -86,16 +88,18 @@ public class LoginLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         String[] log = {"[" + date + "] " + playerName + " logged out."};
 
-        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        
         
         if (!checkExemptionList(player)) {
             if (globalLogin) {
-                Writer.writeFile(log, chatFile);
+                plugin.writer.writeFile(log, chatFile);
             }
             if (playerLogin) {
-                Writer.writeFile(log, playerFile);
+                plugin.writer.writeFile(log, playerFile);
             }
         }
+        
+        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
     }
 
     public void checkPlayer(String name) throws IOException {

@@ -11,7 +11,7 @@ public class Notifier {
         this.plugin = plugins;
     }
 
-    public static void notifyPlayer(String string) {
+    public void notifyPlayer(String string) {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             if (player.hasPermission("cclogger.notify")) {
                 player.sendMessage(string);

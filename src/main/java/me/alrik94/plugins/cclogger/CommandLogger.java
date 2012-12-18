@@ -66,26 +66,28 @@ public class CommandLogger
         File playerFile = new File(playersFolder, playerName + ".log");
         File notifyCommandFile = new File(this.plugin.getDataFolder(), "notifyCommands.log");
 
-        plugin.database.writeCommandContent(playerName, command, x, y, z, worldName, date, ipAddress);
+        
         
         if (!checkExemptionList(player)) {
             if ((globalCommand)
                     && (!commandCheck(command))) {
-                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), commandFile);
+                plugin.writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), commandFile);
             }
 
             if ((playerCommand)
                     && (!commandCheck(command))) {
-                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), playerFile);
+                plugin.writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), playerFile);
             }
 
             if ((checkNotifyList(command)) && (logNotifyCommands)) {
-                Writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), notifyCommandFile);
+                plugin.writer.writeFile(formatLog(playerName, command, x, y, z, worldName, date, ipAddress), notifyCommandFile);
             }
             if ((checkNotifyList(command)) && (inGameNotifications)) {
-                Notifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
+                plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
             }
         }
+        
+        plugin.database.writeCommandContent(playerName, command, x, y, z, worldName, date, ipAddress);
     }
 
     public String[] formatLog(String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
