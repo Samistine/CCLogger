@@ -11,7 +11,7 @@ permissions:
     default: op
   cclogger.exempt:
     description: Players with this permission do not get logged for anything.
-    default: op
+    default: no op
 commands:
   ccreload:
     description: This command reloads the CCLogger configuration.
