@@ -164,21 +164,21 @@ public class CCLogger extends JavaPlugin
                 }
                 
             }
-            if (args.length > 0 && args[0].equalsIgnoreCase("pinfo")){
-                if(args.length == 1){
-                    sender.sendMessage(ChatColor.RED + "/ccl pinfo <player>");
-                }
-                if (args.length == 2){
-                    int count = 0;
-                    String playerName = args[1];
-                    try {
-                        count = database.totalPlayerChatCount(playerName);
-                    } catch (SQLException ex) {
-                        Logger.getLogger(CCLogger.class.getName()).log(Level.SEVERE, null, ex);
-                    }
-                    sender.sendMessage(""+count);
-                }
-            }
+//            if (args.length > 0 && args[0].equalsIgnoreCase("pinfo")){
+//                if(args.length == 1){
+//                    sender.sendMessage(ChatColor.RED + "/ccl pinfo <player>");
+//                }
+//                if (args.length == 2){
+//                    int count = 0;
+//                    String playerName = args[1];
+//                    try {
+//                        count = database.totalPlayerChatCount(playerName);
+//                    } catch (SQLException ex) {
+//                        Logger.getLogger(CCLogger.class.getName()).log(Level.SEVERE, null, ex);
+//                    }
+//                    sender.sendMessage(""+count);
+//                }
+//            }
             
             
             return true;
