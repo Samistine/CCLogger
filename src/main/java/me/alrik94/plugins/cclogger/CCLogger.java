@@ -3,8 +3,6 @@ package me.alrik94.plugins.cclogger;
 import java.io.File;
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import lib.PatPeter.SQLibrary.SQLite;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -70,32 +68,32 @@ public class CCLogger extends JavaPlugin
             }
             this.config.options().header(defaultFormat());
             if (!this.config.contains("Log.toggle.globalCommands")) {
-                this.config.set("Log.toggle.globalCommands", Boolean.valueOf(true));
+                this.config.set("Log.toggle.globalCommands", true);
             }
             if (!this.config.contains("Log.toggle.globalChat")) {
-                this.config.set("Log.toggle.globalChat", Boolean.valueOf(true));
+                this.config.set("Log.toggle.globalChat", true);
             }
             if (!this.config.contains("Log.toggle.playerCommands")) {
-                this.config.set("Log.toggle.playerCommands", Boolean.valueOf(true));
+                this.config.set("Log.toggle.playerCommands", true);
             }
             if (!this.config.contains("Log.toggle.playerChat")) {
-                this.config.set("Log.toggle.playerChat", Boolean.valueOf(true));
+                this.config.set("Log.toggle.playerChat", true);
             }
             if (!this.config.contains("Log.toggle.logNotifyChat")) {
-                this.config.set("Log.toggle.logNotifyChat", Boolean.valueOf(true));
+                this.config.set("Log.toggle.logNotifyChat", true);
             }
             if (!this.config.contains("Log.toggle.inGameNotifications")) {
-                this.config.set("Log.toggle.inGameNotifications", Boolean.valueOf(true));
+                this.config.set("Log.toggle.inGameNotifications", true);
             }
             if (!this.config.contains("Log.toggle.logNotifyCommands")) {
-                this.config.set("Log.toggle.logNotifyCommands", Boolean.valueOf(true));
+                this.config.set("Log.toggle.logNotifyCommands", true);
             }
 
             if (!this.config.contains("Log.toggle.playerLogin")) {
-                this.config.set("Log.toggle.playerLogin", Boolean.valueOf(true));
+                this.config.set("Log.toggle.playerLogin", true);
             }
             if (!this.config.contains("Log.toggle.globalLogin")) {
-                this.config.set("Log.toggle.globalLogin", Boolean.valueOf(true));
+                this.config.set("Log.toggle.globalLogin", true);
             }
             if (!this.config.contains("Log.commands.blacklist")) {
                 this.config.addDefault("Log.commands.blacklist", Arrays.asList(blacklist));
