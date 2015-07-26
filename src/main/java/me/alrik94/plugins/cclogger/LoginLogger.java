@@ -28,37 +28,25 @@ public class LoginLogger
     public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
         Player player = event.getPlayer();
         String name = player.getName();
-        Location location = player.getLocation();
-        int x = (int) location.getX();
-        int y = (int) location.getY();
-        int z = (int) location.getZ();
-        World world = location.getWorld();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-        String worldName = world.getName();
         String date = getDate();
         String login = "1";
         checkPlayer(name);
-        processInformationJoin(player, name, login, x, y, z, worldName, date, ipAddress);
+        processInformationJoin(player, name, login, date, ipAddress);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
     public void onPlayerQuit(PlayerQuitEvent event) throws IOException {
         Player player = event.getPlayer();
         String name = player.getName();
-        Location location = player.getLocation();
-        int x = (int) location.getX();
-        int y = (int) location.getY();
-        int z = (int) location.getZ();
-        World world = location.getWorld();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-        String worldName = world.getName();
         String date = getDate();
         String login = "0";
         checkPlayer(name);
-        processInformationQuit(player, name, login, x, y, z, worldName, date, ipAddress);
+        processInformationQuit(player, name, login, date, ipAddress);
     }
 
-    public void processInformationJoin(Player player, String playerName, String login, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public void processInformationJoin(Player player, String playerName, String login, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -77,10 +65,10 @@ public class LoginLogger
             }
         }
         
-        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        plugin.database.writeLoginContent(playerName, login, date, ipAddress);
     }
 
-    public void processInformationQuit(Player player, String playerName, String login, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public void processInformationQuit(Player player, String playerName, String login, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -99,7 +87,7 @@ public class LoginLogger
             }
         }
         
-        plugin.database.writeLoginContent(playerName, login, x, y, z, worldName, date, ipAddress);
+        plugin.database.writeLoginContent(playerName, login, date, ipAddress);
     }
 
     public void checkPlayer(String name) throws IOException {

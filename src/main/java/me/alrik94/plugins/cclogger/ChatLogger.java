@@ -8,8 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -35,28 +33,16 @@ public class ChatLogger
 
         String message = event.getMessage();
 
-        Location location = player.getLocation();
-
-        int xLocation = (int) location.getX();
-
-        int yLocation = (int) location.getY();
-
-        int zLocation = (int) location.getZ();
-
-        World world = location.getWorld();
-
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-
-        String worldName = world.getName();
 
         String date = getDate();
 
         checkPlayer(name);
 
-        processInformation(player, name, message, xLocation, yLocation, zLocation, worldName, date, ipAddress);
+        processInformation(player, name, message, date, ipAddress);
     }
 
-    public void processInformation(Player player, String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public void processInformation(Player player, String playerName, String content, String date, String ipAddress) {
         boolean globalChat = this.plugin.getConfig().getBoolean("Log.toggle.globalChat");
         boolean playerChat = this.plugin.getConfig().getBoolean("Log.toggle.playerChat");
         boolean logNotifyChat = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
@@ -71,20 +57,20 @@ public class ChatLogger
         
         if (!checkExemptionList(player)) {
             if (globalChat) {
-                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), chatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), chatFile);
             }
             if (playerChat) {
-                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), playerFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), playerFile);
             }
             if ((checkNotifyList(content)) && (logNotifyChat)) {
-                plugin.writer.writeFile(formatLog(playerName, content, x, y, z, worldName, date, ipAddress), notifyChatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), notifyChatFile);
             }
             if ((checkNotifyList(content)) && (inGameNotifications)) {
                 plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
             }
         }
         
-        plugin.database.writeChatContent(playerName, content, x, y, z, worldName, date, ipAddress);
+        plugin.database.writeChatContent(playerName, content, date, ipAddress);
     }
 
     public void checkPlayer(String name)
@@ -96,7 +82,7 @@ public class ChatLogger
         }
     }
 
-    public String[] formatLog(String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
+    public String[] formatLog(String playerName, String command, String date, String ipAddress) {
         String format = this.plugin.getConfig().getString("Log.logFormat");
         String log = format;
         if (log.contains("%ip")) {
@@ -104,18 +90,6 @@ public class ChatLogger
         }
         if (log.contains("%date")) {
             log = log.replaceAll("%date", date);
-        }
-        if (log.contains("%world")) {
-            log = log.replaceAll("%world", worldName);
-        }
-        if (log.contains("%x")) {
-            log = log.replaceAll("%x", Integer.toString(x));
-        }
-        if (log.contains("%y")) {
-            log = log.replaceAll("%y", Integer.toString(y));
-        }
-        if (log.contains("%z")) {
-            log = log.replaceAll("%z", Integer.toString(z));
         }
         if (log.contains("%name")) {
             log = log.replaceAll("%name", playerName);

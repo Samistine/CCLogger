@@ -100,7 +100,7 @@ public class CCLogger extends JavaPlugin
             }
 
             if (!this.config.contains("Log.logFormat")) {
-                this.config.addDefault("Log.logFormat", "[%ip][%date (%world: %x,%y,%z)] %name: %content");
+                this.config.addDefault("Log.logFormat", "[%ip][%date] %name: %content");
             }
             if (!this.config.contains("Log.notifications.chat")) {
                 this.config.addDefault("Log.notifications.chat", Arrays.asList(chatNotifyList));
@@ -116,13 +116,9 @@ public class CCLogger extends JavaPlugin
 
     public String defaultFormat() {
         String dateFormat = "%date = The date and time when the content is logged.\n";
-        String worldFormat = "%world = The world the player is in when the content is logged.\n";
-        String xCoord = "%x = The x coordinate of player when the content is logged.\n";
-        String yCoord = "%y = The y coordinate of player when the content is logged.\n";
-        String zCoord = "%z = The z coordinate of player when the content is logged.\n";
         String nameFormat = "%name = The name of the player that created the content that is logged.\n";
         String contentFormat = "%content = The content that is logged.\n";
-        String format = dateFormat + worldFormat + xCoord + yCoord + zCoord + nameFormat + contentFormat;
+        String format = dateFormat + nameFormat + contentFormat;
         return format;
     }
 

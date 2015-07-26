@@ -33,7 +33,7 @@ public class Database {
         if (sqlite.checkTable("chat")) {
             return;
         } else {
-            sqlite.query("CREATE TABLE 'chat'(playername VARCHAR(50), content VARCHAR(50), xlocation VARCHAR(50), ylocation VARCHAR(50), zlocation VARCHAR(50), worldname VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
+            sqlite.query("CREATE TABLE 'chat'(playername VARCHAR(50), content VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
 
             sqlite.query("INSERT INTO 'chat'(playername, content) VALUES('Pew446', '08/09/2012');"); //This is optional. You can do this later if you want.
 
@@ -42,7 +42,7 @@ public class Database {
         if (sqlite.checkTable("commands")) {
             return;
         } else {
-            sqlite.query("CREATE TABLE 'commands'(playername VARCHAR(50), content VARCHAR(50), xlocation VARCHAR(50), ylocation VARCHAR(50), zlocation VARCHAR(50), worldname VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
+            sqlite.query("CREATE TABLE 'commands'(playername VARCHAR(50), content VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
 
             sqlite.query("INSERT INTO 'commands'(playername, content) VALUES('Pew446', '08/09/2012');"); //This is optional. You can do this later if you want.
 
@@ -51,7 +51,7 @@ public class Database {
         if (sqlite.checkTable("logins")) {
             return;
         } else {
-            sqlite.query("CREATE TABLE 'logins'(playername VARCHAR(50), loginlogout VARCHAR(50), xlocation VARCHAR(50), ylocation VARCHAR(50), zlocation VARCHAR(50), worldname VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
+            sqlite.query("CREATE TABLE 'logins'(playername VARCHAR(50), loginlogout VARCHAR(50), date VARCHAR(50), ipaddress VARCHAR(50));");
 
             sqlite.query("INSERT INTO 'logins'(playername, loginlogout) VALUES('Pew446', '1');"); //This is optional. You can do this later if you want.
 
@@ -59,16 +59,16 @@ public class Database {
         }
     }
     
-    public void writeChatContent(String playerName, String content, int x, int y, int z, String worldName, String date, String ipAddress) {
-        sqlite.query("INSERT INTO 'chat'(playername, content, xlocation, ylocation, zlocation, worldname, date, ipaddress) VALUES('" + playerName + "', '" + content + "', '" + x + "', '" + y + "', '" + z + "', '" + worldName + "', '" + date + "', '" + ipAddress + "');");
+    public void writeChatContent(String playerName, String content, String date, String ipAddress) {
+        sqlite.query("INSERT INTO 'chat'(playername, content, date, ipaddress) VALUES('" + playerName + "', '" + content + "', '" + date + "', '" + ipAddress + "');");
     }
 
-    public void writeCommandContent(String playerName, String command, int x, int y, int z, String worldName, String date, String ipAddress) {
-        sqlite.query("INSERT INTO 'commands'(playername, content, xlocation, ylocation, zlocation, worldname, date, ipaddress) VALUES('" + playerName + "', '" + command + "', '" + x + "', '" + y + "', '" + z + "', '" + worldName + "', '" + date + "', '" + ipAddress + "');");
+    public void writeCommandContent(String playerName, String command, String date, String ipAddress) {
+        sqlite.query("INSERT INTO 'commands'(playername, content, date, ipaddress) VALUES('" + playerName + "', '" + command + "', '" + date + "', '" + ipAddress + "');");
     }
 
-    public void writeLoginContent(String playerName, String loginlogout, int x, int y, int z, String worldName, String date, String ipAddress) {
-        sqlite.query("INSERT INTO 'logins'(playername, loginlogout, xlocation, ylocation, zlocation, worldname, date, ipaddress) VALUES('" + playerName + "', '" + loginlogout + "', '" + x + "', '" + y + "', '" + z + "', '" + worldName + "', '" + date + "', '" + ipAddress + "');");
+    public void writeLoginContent(String playerName, String loginlogout, String date, String ipAddress) {
+        sqlite.query("INSERT INTO 'logins'(playername, loginlogout, date, ipaddress) VALUES('" + playerName + "', '" + loginlogout + "', '" + date + "', '" + ipAddress + "');");
     }
     
     public int countWordFromPlayer(String playerName, String word) throws SQLException{
