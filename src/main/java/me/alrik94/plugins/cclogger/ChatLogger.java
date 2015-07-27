@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -18,7 +19,6 @@ public class ChatLogger
         implements Listener {
 
     private CCLogger plugin;
-    
 
     public ChatLogger(CCLogger plugins) {
         this.plugin = plugins;
@@ -30,17 +30,15 @@ public class ChatLogger
         if (event.isCommand() || event.isCancelled()) {
             return;
         }
-        ProxiedPlayer player = (ProxiedPlayer) event.getSender(); 
 
+        ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         String name = player.getName();
-
+        UUID uuid = player.getUniqueId();
         String message = event.getMessage();
-
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-
         String date = getDate();
 
-        checkPlayer(name);
+        checkPlayer(uuid);
 
         processInformation(player, name, message, date, ipAddress);
     }
@@ -53,11 +51,9 @@ public class ChatLogger
 
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
         File chatFile = new File(this.plugin.getDataFolder(), "chat.log");
-        File playerFile = new File(playersFolder, playerName + ".log");
+        File playerFile = new File(playersFolder, player.getUniqueId().toString() + ".log");
         File notifyChatFile = new File(this.plugin.getDataFolder(), "notifyChat.log");
 
-        
-        
         if (!checkExemptionList(player)) {
             if (globalChat) {
                 plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), chatFile);
@@ -72,14 +68,13 @@ public class ChatLogger
                 plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
             }
         }
-        
+
         plugin.database.writeChatContent(playerName, content, date, ipAddress);
     }
 
-    public void checkPlayer(String name)
-            throws IOException {
+    public void checkPlayer(UUID uuid) throws IOException {
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
-        File file = new File(playersFolder, name + ".log");
+        File file = new File(playersFolder, uuid.toString() + ".log");
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -112,9 +107,9 @@ public class ChatLogger
     }
 
     public boolean checkNotifyList(String message) {
-        List messageList = this.plugin.getConfig().getStringList("Log.notifications.chat");
-        for (int i = 0; i < messageList.size(); i++) {
-            if (message.toLowerCase().contains((CharSequence) messageList.get(i))) {
+        List<String> messageList = this.plugin.getConfig().getStringList("Log.notifications.chat");
+        for (String messageList1 : messageList) {
+            if (message.toLowerCase().contains((CharSequence) messageList1)) {
                 return true;
             }
         }
@@ -122,9 +117,6 @@ public class ChatLogger
     }
 
     public boolean checkExemptionList(ProxiedPlayer player) {
-        if (player.hasPermission("cclogger.exempt")) {
-            return true;
-        }
-        return false;
+        return player.hasPermission("cclogger.exempt");
     }
 }

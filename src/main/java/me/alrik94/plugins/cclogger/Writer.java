@@ -8,11 +8,11 @@ import java.io.IOException;
 public class Writer {
 
     private CCLogger plugin;
-    
+
     public Writer(CCLogger plugins) {
         this.plugin = plugins;
     }
-    
+
     public void createFile(File file, String[] i) {
         BufferedWriter buffwriter = null;
         FileWriter filewriter = null;
@@ -45,11 +45,9 @@ public class Writer {
 
     public void writeFile(String[] i, File type) {
         File log = type;
-        BufferedWriter buffwriter = null;
-        FileWriter filewriter = null;
         try {
-            filewriter = new FileWriter(log, true);
-            buffwriter = new BufferedWriter(filewriter);
+            FileWriter filewriter = new FileWriter(log, true);
+            BufferedWriter buffwriter = new BufferedWriter(filewriter);
 
             for (String s : i) {
                 buffwriter.write(s);

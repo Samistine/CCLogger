@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import net.md_5.bungee.api.ChatColor;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
@@ -32,16 +33,13 @@ public class CommandLogger
         }
         
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
-
         String name = player.getName();
-
+        UUID uuid = player.getUniqueId();
         String command = event.getMessage();
-
         String ipAddress = player.getAddress().getAddress().getHostAddress();
-
         String date = getDate();
-
-        checkPlayer(name);
+        
+        checkPlayer(uuid);
 
         processInformation(player, name, command, date, ipAddress);
     }
@@ -53,19 +51,17 @@ public class CommandLogger
         boolean inGameNotifications = this.plugin.getConfig().getBoolean("Log.toggle.inGameNotifications");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
         File commandFile = new File(this.plugin.getDataFolder(), "commands.log");
-        File playerFile = new File(playersFolder, playerName + ".log");
+        File playerFile = new File(playersFolder, player.getUniqueId().toString() + ".log");
         File notifyCommandFile = new File(this.plugin.getDataFolder(), "notifyCommands.log");
 
         
         
         if (!checkExemptionList(player)) {
-            if ((globalCommand)
-                    && (!commandCheck(command))) {
+            if ((globalCommand) && (!commandCheck(command))) {
                 plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress), commandFile);
             }
 
-            if ((playerCommand)
-                    && (!commandCheck(command))) {
+            if ((playerCommand) && (!commandCheck(command))) {
                 plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress), playerFile);
             }
 
@@ -101,11 +97,11 @@ public class CommandLogger
     }
 
     public boolean commandCheck(String command) {
-        List commands = this.plugin.getConfig().getStringList("Log.commands.blacklist");
+        List<String> commands = this.plugin.getConfig().getStringList("Log.commands.blacklist");
         String[] commandsplit = command.split(" ");
         String commandconvert = commandsplit[0];
-        for (int i = 0; i < commands.size(); i++) {
-            if (commandconvert.matches((String) commands.get(i))) {
+        for (String command1 : commands) {
+            if (commandconvert.matches(command1)) {
                 return true;
             }
         }
@@ -113,20 +109,20 @@ public class CommandLogger
     }
 
     public boolean checkNotifyList(String command) {
-        List commands = this.plugin.getConfig().getStringList("Log.notifications.commands");
+        List<String> commands = this.plugin.getConfig().getStringList("Log.notifications.commands");
         String[] commandsplit = command.split(" ");
         String commandconvert = commandsplit[0];
-        for (int i = 0; i < commands.size(); i++) {
-            if (commandconvert.matches((String) commands.get(i))) {
+        for (String command1 : commands) {
+            if (commandconvert.matches(command1)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void checkPlayer(String name) throws IOException {
+    public void checkPlayer(UUID uuid) throws IOException {
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
-        File file = new File(playersFolder, name + ".log");
+        File file = new File(playersFolder, uuid.toString() + ".log");
         if (!file.exists()) {
             file.createNewFile();
         }
@@ -139,9 +135,6 @@ public class CommandLogger
     }
 
     public boolean checkExemptionList(ProxiedPlayer player) {
-        if (player.hasPermission("cclogger.exempt")) {
-            return true;
-        }
-        return false;
+        return player.hasPermission("cclogger.exempt");
     }
 }
