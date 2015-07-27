@@ -37,13 +37,14 @@ public class ChatLogger
         String message = event.getMessage();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
         String date = getDate();
+        String server = player.getServer().getInfo().getName();
 
         checkPlayer(uuid);
 
-        processInformation(player, name, message, date, ipAddress);
+        processInformation(player, name, message, date, ipAddress, server);
     }
 
-    public void processInformation(ProxiedPlayer player, String playerName, String content, String date, String ipAddress) {
+    public void processInformation(ProxiedPlayer player, String playerName, String content, String date, String ipAddress, String server) {
         boolean globalChat = this.plugin.getConfig().getBoolean("Log.toggle.globalChat");
         boolean playerChat = this.plugin.getConfig().getBoolean("Log.toggle.playerChat");
         boolean logNotifyChat = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
@@ -56,20 +57,20 @@ public class ChatLogger
 
         if (!checkExemptionList(player)) {
             if (globalChat) {
-                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), chatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress, server), chatFile);
             }
             if (playerChat) {
-                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), playerFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress, server), playerFile);
             }
             if ((checkNotifyList(content)) && (logNotifyChat)) {
-                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress), notifyChatFile);
+                plugin.writer.writeFile(formatLog(playerName, content, date, ipAddress, server), notifyChatFile);
             }
             if ((checkNotifyList(content)) && (inGameNotifications)) {
                 plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + content);
             }
         }
 
-        plugin.database.writeChatContent(playerName, content, date, ipAddress);
+        plugin.database.writeChatContent(playerName, content, date, ipAddress); //TODO: Server Support
     }
 
     public void checkPlayer(UUID uuid) throws IOException {
@@ -80,7 +81,7 @@ public class ChatLogger
         }
     }
 
-    public String[] formatLog(String playerName, String command, String date, String ipAddress) {
+    public String[] formatLog(String playerName, String command, String date, String ipAddress, String server) {
         String format = this.plugin.getConfig().getString("Log.logFormat");
         String log = format;
         if (log.contains("%ip")) {
@@ -94,6 +95,9 @@ public class ChatLogger
         }
         if (log.contains("%content")) {
             log = log.replaceAll("%content", Matcher.quoteReplacement(command));
+        }
+        if (log.contains("%server")) {
+            log = log.replaceAll("%server", server);
         }
 
         String[] logArray = {log};

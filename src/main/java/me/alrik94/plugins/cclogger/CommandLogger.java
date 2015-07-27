@@ -31,20 +31,21 @@ public class CommandLogger
         if (event.isCancelled() || !event.isCommand()) {
             return;
         }
-        
+
         ProxiedPlayer player = (ProxiedPlayer) event.getSender();
         String name = player.getName();
         UUID uuid = player.getUniqueId();
         String command = event.getMessage();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
         String date = getDate();
-        
+        String server = player.getServer().getInfo().getName();
+
         checkPlayer(uuid);
 
-        processInformation(player, name, command, date, ipAddress);
+        processInformation(player, name, command, date, ipAddress, server);
     }
 
-    public void processInformation(ProxiedPlayer player, String playerName, String command, String date, String ipAddress) {
+    public void processInformation(ProxiedPlayer player, String playerName, String command, String date, String ipAddress, String server) {
         boolean playerCommand = this.plugin.getConfig().getBoolean("Log.toggle.playerCommands");
         boolean globalCommand = this.plugin.getConfig().getBoolean("Log.toggle.globalCommands");
         boolean logNotifyCommands = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyCommands");
@@ -54,29 +55,27 @@ public class CommandLogger
         File playerFile = new File(playersFolder, player.getUniqueId().toString() + ".log");
         File notifyCommandFile = new File(this.plugin.getDataFolder(), "notifyCommands.log");
 
-        
-        
         if (!checkExemptionList(player)) {
             if ((globalCommand) && (!commandCheck(command))) {
-                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress), commandFile);
+                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress, server), commandFile);
             }
 
             if ((playerCommand) && (!commandCheck(command))) {
-                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress), playerFile);
+                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress, server), playerFile);
             }
 
             if ((checkNotifyList(command)) && (logNotifyCommands)) {
-                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress), notifyCommandFile);
+                plugin.writer.writeFile(formatLog(playerName, command, date, ipAddress, server), notifyCommandFile);
             }
             if ((checkNotifyList(command)) && (inGameNotifications)) {
                 plugin.chatNotifier.notifyPlayer(ChatColor.BLUE + "[" + ChatColor.RED + "CCLogger" + ChatColor.BLUE + "] " + ChatColor.GOLD + playerName + ": " + ChatColor.WHITE + command);
             }
         }
-        
+
         plugin.database.writeCommandContent(playerName, command, date, ipAddress);
     }
 
-    public String[] formatLog(String playerName, String command, String date, String ipAddress) {
+    public String[] formatLog(String playerName, String command, String date, String ipAddress, String server) {
         String format = this.plugin.getConfig().getString("Log.logFormat");
         String log = format;
         if (log.contains("%ip")) {
@@ -90,6 +89,9 @@ public class CommandLogger
         }
         if (log.contains("%content")) {
             log = log.replaceAll("%content", Matcher.quoteReplacement(command));
+        }
+        if (log.contains("%server")) {
+            log = log.replaceAll("%server", server);
         }
 
         String[] logArray = {log};

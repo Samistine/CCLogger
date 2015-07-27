@@ -1,8 +1,5 @@
 # %date = The date and time when the content is logged.
-# %world = The world the player is in when the content is logged.
-# %x = The x coordinate of player when the content is logged.
-# %y = The y coordinate of player when the content is logged.
-# %z = The z coordinate of player when the content is logged.
+# %server = The server the player is in when the content is logged.
 # %name = The name of the player that created the content that is logged.
 # %content = The content that is logged.
 
@@ -12,7 +9,7 @@ Log:
     - /help
     - /who
     - /home
-  logFormat: '[%date] %name: %content'
+  logFormat: '[%date] [%server] %name: %content'
   notifications:
     chat:
     - kill
