@@ -7,12 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerCommandPreprocessEvent;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 public class CommandLogger
         implements Listener {
@@ -21,13 +21,17 @@ public class CommandLogger
     private Notifier notifier;
 
     public CommandLogger(CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         this.plugin = plugins;
+        plugin.getProxy().getPluginManager().registerListener(plugin, this);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) throws IOException {
-        Player player = event.getPlayer();
+    public void onPlayerCommandPreprocess(ChatEvent event) throws IOException {
+        if (event.isCancelled() || !event.isCommand()) {
+            return;
+        }
+        
+        ProxiedPlayer player = (ProxiedPlayer) event.getSender();
 
         String name = player.getName();
 
@@ -42,7 +46,7 @@ public class CommandLogger
         processInformation(player, name, command, date, ipAddress);
     }
 
-    public void processInformation(Player player, String playerName, String command, String date, String ipAddress) {
+    public void processInformation(ProxiedPlayer player, String playerName, String command, String date, String ipAddress) {
         boolean playerCommand = this.plugin.getConfig().getBoolean("Log.toggle.playerCommands");
         boolean globalCommand = this.plugin.getConfig().getBoolean("Log.toggle.globalCommands");
         boolean logNotifyCommands = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyCommands");
@@ -134,7 +138,7 @@ public class CommandLogger
         return dateFormat.format(date);
     }
 
-    public boolean checkExemptionList(Player player) {
+    public boolean checkExemptionList(ProxiedPlayer player) {
         if (player.hasPermission("cclogger.exempt")) {
             return true;
         }

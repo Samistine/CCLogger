@@ -4,7 +4,7 @@ package me.alrik94.plugins.cclogger;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import lib.PatPeter.SQLibrary.SQLite;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 public class Database {
     
@@ -19,13 +19,14 @@ public class Database {
         sqlite = new SQLite(plugin.getLogger(),
                 "CCLogger",
                 "data",
-                plugin.getDataFolder().getAbsolutePath());
+                plugin.getDataFolder());
 //Make sure sqlite is the same as the variable you specified at the top of the plugin!
         try {
             sqlite.open();
         } catch (Exception e) {
             plugin.getLogger().info(e.getMessage());
-            plugin.getPluginLoader().disablePlugin(plugin);
+            //plugin.getPluginLoader().disablePlugin(plugin);
+            plugin.getProxy().stop("CCLogger expierenced an exception with the database");
         }
     }
     

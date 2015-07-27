@@ -1,7 +1,7 @@
 package me.alrik94.plugins.cclogger;
 
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+
 
 public class Notifier {
 
@@ -12,7 +12,7 @@ public class Notifier {
     }
 
     public void notifyPlayer(String string) {
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+        for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
             if (player.hasPermission("cclogger.notify")) {
                 player.sendMessage(string);
             }

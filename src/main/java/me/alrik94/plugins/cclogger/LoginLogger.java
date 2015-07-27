@@ -5,14 +5,12 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import org.bukkit.Location;
-import org.bukkit.World;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.PlayerDisconnectEvent;
+import net.md_5.bungee.api.event.PostLoginEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 public class LoginLogger
         implements Listener {
@@ -20,13 +18,13 @@ public class LoginLogger
     private CCLogger plugin;
 
     public LoginLogger(CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         this.plugin = plugins;
+        plugin.getProxy().getPluginManager().registerListener(plugin, this);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerJoin(PlayerJoinEvent event) throws IOException {
-        Player player = event.getPlayer();
+    public void onPlayerJoin(PostLoginEvent event) throws IOException {
+        ProxiedPlayer player = event.getPlayer();
         String name = player.getName();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
         String date = getDate();
@@ -36,8 +34,8 @@ public class LoginLogger
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerQuit(PlayerQuitEvent event) throws IOException {
-        Player player = event.getPlayer();
+    public void onPlayerQuit(PlayerDisconnectEvent event) throws IOException {
+        ProxiedPlayer player = event.getPlayer();
         String name = player.getName();
         String ipAddress = player.getAddress().getAddress().getHostAddress();
         String date = getDate();
@@ -46,7 +44,7 @@ public class LoginLogger
         processInformationQuit(player, name, login, date, ipAddress);
     }
 
-    public void processInformationJoin(Player player, String playerName, String login, String date, String ipAddress) {
+    public void processInformationJoin(ProxiedPlayer player, String playerName, String login, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -68,7 +66,7 @@ public class LoginLogger
         plugin.database.writeLoginContent(playerName, login, date, ipAddress);
     }
 
-    public void processInformationQuit(Player player, String playerName, String login, String date, String ipAddress) {
+    public void processInformationQuit(ProxiedPlayer player, String playerName, String login, String date, String ipAddress) {
         boolean globalLogin = this.plugin.getConfig().getBoolean("Log.toggle.globalLogin");
         boolean playerLogin = this.plugin.getConfig().getBoolean("Log.toggle.playerLogin");
         File playersFolder = new File(this.plugin.getDataFolder(), "players");
@@ -104,7 +102,7 @@ public class LoginLogger
         return dateFormat.format(date);
     }
 
-    public boolean checkExemptionList(Player player) {
+    public boolean checkExemptionList(ProxiedPlayer player) {
         if (player.hasPermission("cclogger.exempt")) {
             return true;
         }

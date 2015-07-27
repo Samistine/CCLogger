@@ -6,10 +6,9 @@ package lib.PatPeter.SQLibrary;
  
 import java.util.logging.Level;
 import java.util.logging.Logger;
- 
-import org.bukkit.plugin.java.JavaPlugin;
+import net.md_5.bungee.api.plugin.Plugin;
 
-public class SQLibrary extends JavaPlugin {
+public class SQLibrary extends Plugin {
  
     public static final Logger logger = Logger.getLogger("Minecraft");
  

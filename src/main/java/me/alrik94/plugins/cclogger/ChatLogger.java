@@ -7,12 +7,12 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.player.AsyncPlayerChatEvent;
+import net.md_5.bungee.api.ChatColor;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
+import net.md_5.bungee.api.event.ChatEvent;
+import net.md_5.bungee.api.plugin.Listener;
+import net.md_5.bungee.event.EventHandler;
+import net.md_5.bungee.event.EventPriority;
 
 public class ChatLogger
         implements Listener {
@@ -21,13 +21,16 @@ public class ChatLogger
     
 
     public ChatLogger(CCLogger plugins) {
-        plugins.getServer().getPluginManager().registerEvents(this, plugins);
         this.plugin = plugins;
+        plugin.getProxy().getPluginManager().registerListener(plugin, this);
     }
 
     @EventHandler(priority = EventPriority.LOWEST)
-    public void onPlayerChat(AsyncPlayerChatEvent event) throws IOException {
-        Player player = event.getPlayer();
+    public void onPlayerChat(ChatEvent event) throws IOException {
+        if (event.isCommand() || event.isCancelled()) {
+            return;
+        }
+        ProxiedPlayer player = (ProxiedPlayer) event.getSender(); 
 
         String name = player.getName();
 
@@ -42,7 +45,7 @@ public class ChatLogger
         processInformation(player, name, message, date, ipAddress);
     }
 
-    public void processInformation(Player player, String playerName, String content, String date, String ipAddress) {
+    public void processInformation(ProxiedPlayer player, String playerName, String content, String date, String ipAddress) {
         boolean globalChat = this.plugin.getConfig().getBoolean("Log.toggle.globalChat");
         boolean playerChat = this.plugin.getConfig().getBoolean("Log.toggle.playerChat");
         boolean logNotifyChat = this.plugin.getConfig().getBoolean("Log.toggle.logNotifyChat");
@@ -118,7 +121,7 @@ public class ChatLogger
         return false;
     }
 
-    public boolean checkExemptionList(Player player) {
+    public boolean checkExemptionList(ProxiedPlayer player) {
         if (player.hasPermission("cclogger.exempt")) {
             return true;
         }
